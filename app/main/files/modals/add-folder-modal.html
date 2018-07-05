@@ -1,0 +1,92 @@
+<form class="form-horizontal" name="form1" ng-submit="onSubmit(form1)">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <div ng-switch="rank">
+            <div ng-switch-when="0">
+                <h4 class="modal-title">
+                    <i style="color:orange" class="fa fa-folder"></i>
+                    <!-- 新建目录 -->
+                    {{'community.create'|translate}}
+                </h4>
+            </div>
+            <div ng-switch-when="1">
+                <h4 class="modal-title">
+                    <i style="color:orange" class="fa fa-folder"></i>
+                    <!-- 新建目录 -->
+                    {{'activity.create'|translate}}
+                </h4>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="form-group" ng-class="{'has-error': form1.name.$dirty && !form1.name.$valid,
+  'has-success': form1.name.$dirty && form1.name.$valid}">
+            <div ng-switch="rank">
+                <div ng-switch-when="0">
+                    <label class="col-sm-3 control-label" for="name">
+                        <!-- 目录名: -->
+                        {{'community.name'|translate}}:
+                    </label>
+                </div>
+                <div ng-switch-when="1">
+                    <label class="col-sm-3 control-label" for="name">
+                        <!-- 目录名: -->
+                        {{'activity.name'|translate}}:
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-sm-7">
+                <input type="text" ng-model="item.name" id="name" autocomplete="off" autofocus cleanable-input
+                       name="name" required="required" ng-pattern="reg.folderName" class="input-md form-control"/>
+            </div>
+        </div>
+        <div ng-if="rank==1" class="form-group" ng-class="{'has-error': form1.beginTime.$dirty && !form1.beginTime.$valid,
+  'has-success': form1.beginTime.$dirty && form1.beginTime.$valid}">
+            <label class="col-sm-3 control-label" for="desc">
+                <!-- 活动开始时间 -->
+                {{'activity.beginTime'|translate}}:
+            </label>
+            <div class="col-sm-7">
+                <input type="datetime-local" ng-model="item.beginTime" id="beginTime"
+                       name="beginTime" required="required" class="input-md form-control"/>
+            </div>
+        </div>
+        <div ng-if="rank==1" class="form-group" ng-class="{'has-error': form1.entTime.$dirty && !form1.entTime.$valid,
+  'has-success': form1.entTime.$dirty && form1.entTime.$valid}">
+            <label class="col-sm-3 control-label" for="entTime">
+                <!-- 活动结束时间 -->
+                {{'activity.entTime'|translate}}:
+            </label>
+            <div class="col-sm-7">
+                <input type="datetime-local" ng-model="item.entTime" id="entTime"
+                       name="entTime" required="required" class="input-md form-control"/>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': form1.desc.$dirty && !form1.desc.$valid,
+  'has-success': form1.desc.$dirty && form1.desc.$valid}">
+            <label class="col-sm-3 control-label" for="desc">
+                <!-- 备注 -->
+                {{'desc'|translate}}:
+            </label>
+            <div class="col-sm-7">
+                <input type="text" ng-model="item.desc" id="desc" autocomplete="off" autofocus cleanable-input
+                       name="desc" required="required" class="input-md form-control"/>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success btn-sm">
+            <i class="glyphicon glyphicon-ok"></i>
+            {{'ok'|translate}}
+        </button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="cancel()">
+            <i class="glyphicon glyphicon-remove"></i>
+            {{'cancel'|translate}}
+        </button>
+    </div>
+</form>
