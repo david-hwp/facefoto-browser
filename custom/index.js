@@ -7,7 +7,7 @@ module.exports= {
   //app id，打包名称前缀
   appId: 'FaceFoto',
 
-  version : '1.0.5',
+  version : '2.0.0',
 
   //app名称，需要提供各个语言版本
   appName: {
