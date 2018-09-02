@@ -1,6 +1,6 @@
 .item-block{
   float:left;
-  height: 50px;
+  height: 80px;
   width: 220px;
   margin:6px;
   padding:4px;
@@ -19,19 +19,19 @@
   float:left;
   text-align:center;
   vertical-align:middle;
-  width:40px;
-  height: 40px;
-  line-height:40px;
-  font-size:220%;
+  width:60px;
+  height: 60px;
+  line-height:60px;
+  font-size:400%;
   display: block;
 }
 .item-block .item-block-name{
   float:left;
   display: block;
-  width:140px;
+  width:120px;
   height:20px;
+  margin-top: 6px;
   line-height: 20px;
-
   text-overflow: ellipsis;
   white-space:nowrap;
   overflow: hidden;
@@ -41,7 +41,7 @@
   float:left;
   display: block;
   text-overflow: ellipsis;
-  width:140px;
+  width:120px;
   height:16px;
   line-height: 16px;
   font-size:80%;

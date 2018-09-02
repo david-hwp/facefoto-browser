@@ -77,7 +77,7 @@
                 <span>{{item.name|sub:50}}</span>
               </a>
             </span>
-            <span ng-if="item.isFolder!=true">
+                        <span ng-if="item.isFolder!=true">
               <i class="fa fa-{{item|fileIcon}}"
                  ng-class="{'text-muted': item.storageClass=='Archive' && !item.storageStatus}"></i>
               &nbsp;
@@ -172,7 +172,7 @@
                ng-if="item.isFolder!=true && (!item.pic_url || (item.storageClass=='Archive' && item.storageStatus!=3))"
                ng-class="{'text-muted': item.storageClass=='Archive' && !item.storageStatus}"></i>
             <img ng-if="item.isFolder!=true && item.pic_url && (item.storageClass!='Archive' || (item.storageClass=='Archive' && item.storageStatus==3))"
-                 ng-src="{{item.pic_url}}" class="pull-left" style="max-width:32px;max-height:32px;margin:4px;"/>
+                 ng-src="{{item.pic_url}}" class="pull-left" style="max-width:60px;max-height:60px;margin:4px;"/>
 
             <div class="item-block-name" uib-tooltip-html="'<div class=\'break\'>'+item.name+'</div>'"
                  tooltip-append-to-body="true" tooltip-popup-delay="500">{{item.name}}

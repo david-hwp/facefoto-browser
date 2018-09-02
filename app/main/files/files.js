@@ -5,10 +5,6 @@ angular.module('web')
             var userAddr = AuthInfo.get().osspath;
             angular.extend($scope, {
                 similar: null,
-                allCommunity: null,
-                allActivity: null,
-                // currentCommunity: null,
-                // currentActivity: null,
                 showTab: 1,
                 ref: {
                     isBucketList: false,
@@ -395,6 +391,7 @@ angular.module('web')
 
             }
 
+            //TODO 由照片页退回到活动页时没有数据
             function refreshCurrent(info) {
                 if ($scope.rank == 1 && $scope.allCommunity != null) {
                     var allCommunity = angular.copy($scope.allCommunity);
@@ -496,36 +493,39 @@ angular.module('web')
                 });
             }
 
-            function doListFiles(info, marker, fn) {
+            function loadNext() {
+                if ($scope.nextObjectsMarker) {
+                    console.log('loadNext');
+                    doListFiles($scope.currentInfo, $scope.nextObjectsMarker);
+                }
+            }
 
-                ossSvs2.listFiles(info.region, info.bucket, info.key, marker || '').then(function (result) {
-                    var arr = result.data;
-                    if ($scope.rank == 0) {
-                        Facefoto.getCommunity({'page': 1, 'pageSize': arr.length}).then(function (data) {
-                            var all = [];
-                            var j = 0;
-                            for (var i = 0; i < arr.length; i++) {
-                                for (var k = 0; k < data.length; k++) {
-                                    if (arr[i].name == data[k].name) {
-                                        all[j] = $.extend(arr[i], data[k]);
-                                        ++j;
-                                    }
-                                }
+            var times = 0;
+
+            function doListFiles(info, marker, fn) {
+                if ($scope.similar != null) {
+                    var similar = angular.copy($scope.similar);
+                    var arr = angular.copy($scope.objectsOld);
+                    var all = [];
+                    var j = 0;
+                    for (var i = 0; i < arr.length; i++) {
+                        for (var k = 0; k < similar.length; k++) {
+                            if (arr[i].name == similar[k].name) {
+                                all[j] = arr[i];
+                                ++j;
                             }
-                            $scope.allCommunity = all.distinct();
-                            $scope.objects = $scope.objects.concat(all.distinct());
-                        }, function (err) {
-                            console.log(err);
-                            Toast.error(err);
-                        });
-                    } else if ($scope.rank == 1) {
-                        if ($scope.currentInfo.data != null) {
-                            var currentCommunity = angular.copy($scope.currentInfo.data);
-                            Facefoto.getActivity({
-                                'communityId': currentCommunity._id,
-                                'page': 1,
-                                'pageSize': arr.length
-                            }).then(function (data) {
+                        }
+                    }
+                    settingsSvs.showImageSnapshot.get() == 1 ? signPicURL(info, all.distinct()) : null;
+                    $scope.objects = $scope.objects.concat(all.distinct());
+                    $scope.similar = null;
+                } else {
+                    ossSvs2.listFiles(info.region, info.bucket, info.key, marker || '').then(function (result) {
+                        var arr = result.data;
+                        if ($scope.rank == 0) {
+                            // var old = angular.copy($scope.objects);
+                            // console.log(old)
+                            Facefoto.getCommunity({'page': 1, 'pageSize': $scope.objects.length}).then(function (data) {
                                 var all = [];
                                 var j = 0;
                                 for (var i = 0; i < arr.length; i++) {
@@ -536,42 +536,59 @@ angular.module('web')
                                         }
                                     }
                                 }
-                                $scope.allActivity = all.distinct();
                                 $scope.objects = $scope.objects.concat(all.distinct());
+                                $scope.allCommunity = angular.copy($scope.objects)
                             }, function (err) {
                                 console.log(err);
                                 Toast.error(err);
                             });
+                        } else if ($scope.rank == 1) {
+                            if ($scope.currentInfo.data != null) {
+                                var currentCommunity = angular.copy($scope.currentInfo.data);
+                                Facefoto.getActivity({
+                                    'communityId': currentCommunity._id,
+                                    'page': 1,
+                                    'pageSize': arr.length
+                                }).then(function (data) {
+                                    console.log(data)
+                                    var all = [];
+                                    var j = 0;
+                                    for (var i = 0; i < arr.length; i++) {
+                                        for (var k = 0; k < data.length; k++) {
+                                            if (arr[i].name == data[k].name) {
+                                                all[j] = $.extend(arr[i], data[k]);
+                                                ++j;
+                                            }
+                                        }
+                                    }
+                                    $scope.objects = $scope.objects.concat(all.distinct());
+                                    $scope.allActivity = angular.copy($scope.objects)
+                                }, function (err) {
+                                    console.log(err);
+                                    Toast.error(err);
+                                });
+                            }
+                        } else {
+                            settingsSvs.showImageSnapshot.get() == 1 ? signPicURL(info, arr.distinct()) : null;
+                            $scope.objects = $scope.objects.concat(arr.distinct());
                         }
-                    } else if ($scope.similar != null) {
-                        var similar = angular.copy($scope.similar);
-                        var all = [];
-                        var j = 0;
-                        for (var i = 0; i < arr.length; i++) {
-                            for (var k = 0; k < similar.length; k++) {
-                                if (arr[i].name == similar[k].name) {
-                                    all[j] = arr[i];
-                                    ++j;
-                                }
+                        $scope.nextObjectsMarker = result.marker || null;
+                        if ($scope.nextObjectsMarker) {
+                            if (($scope.objects == null || $scope.objects.length < 99) && times < 5) {
+                                times++;
+                                loadNext()
+                            } else {
+                                times = 0;
                             }
                         }
-                        settingsSvs.showImageSnapshot.get() == 1 ? signPicURL(info, all.distinct()) : null;
-                        $scope.objects = $scope.objects.concat(all.distinct());
-                        $scope.similar = null;
-                    } else {
-                        settingsSvs.showImageSnapshot.get() == 1 ? signPicURL(info, arr.distinct()) : null;
-                        $scope.objects = $scope.objects.concat(arr.distinct());
-                    }
-                    $scope.nextObjectsMarker = result.marker || null;
-
-                    safeApply($scope);
-                    if (fn) fn(null);
-                }, function (err) {
-                    console.log(err);
-                    clearObjectsList();
-
-                    if (fn) fn(err);
-                });
+                    }, function (err) {
+                        console.log(err);
+                        clearObjectsList();
+                        if (fn) fn(err);
+                    });
+                }
+                safeApply($scope);
+                if (fn) fn(null);
             }
 
             //去除名称重复的数据
@@ -600,25 +617,17 @@ angular.module('web')
                 var data = {'group_id': $scope.currentInfo.data.groupId, 'oss_path': items[0].path};
                 FacefotoPy.search(data).then(function (res) {
                     $scope.similar = res;
-                    console.log(res);
                     var info = angular.copy($scope.currentInfo);
                     // info.key += $scope.sch.objectName;
                     listFiles(info);
                 }, function (err) {
                     Toast.error(err);
                 });
-                console.log(items)
-            }
-
-            function loadNext() {
-                if ($scope.nextObjectsMarker) {
-                    console.log('loadNext');
-                    doListFiles($scope.currentInfo, $scope.nextObjectsMarker);
-                }
             }
 
             function clearObjectsList() {
                 initSelect();
+                $scope.objectsOld = $scope.objects;
                 $scope.objects = [];
                 $scope.nextObjectsMarker = null;
             }
@@ -638,8 +647,7 @@ angular.module('web')
                             })
                         }
                     });
-                }
-                else {
+                } else {
                     angular.forEach(result, function (n) {
                         if (!n.isFolder && fileSvs.getFileType(n).type == 'picture') {
                             n.pic_url = ossSvs2.signatureUrl2(info.region, info.bucket, n.path, 3600, 'image/resize,w_48');
@@ -698,6 +706,19 @@ angular.module('web')
 
             function showDeleteFilesSelected() {
                 showDeleteFiles($scope.sel.has);
+            }
+
+            function quickDeleteFile(items) {
+                ossSvs2.deleteFiles(currentInfo.region, currentInfo.bucket, items, function (prog) {
+                    //进度
+                    $scope.progress = angular.copy(prog);
+                    safeApply($scope);
+                }).then(function (terr) {
+                    //结果
+                    $scope.step = 3;
+                    $scope.terr = terr;
+                    callback();
+                });
             }
 
             function showDeleteFiles(items) {
@@ -874,6 +895,36 @@ angular.module('web')
                                 },
                                 remove: function () {
                                     showDeleteFiles([item]);
+                                },
+                                quickRemove: function () {
+                                    ossSvs2.deleteFiles($scope.currentInfo.region, $scope.currentInfo.bucket, [item]).then(function (terr) {
+                                        //结果
+                                        var index = $.inArray(item, $scope.objects);
+                                        $scope.objects.splice(index, 1);
+                                        var next = $scope.objects[index];
+
+                                        safeApply($scope);
+                                        showPreview(next)
+                                    });
+                                },
+                                before: function () {
+                                    var index = $.inArray(item, $scope.objects);
+                                    var before = $scope.objects[index - 1];
+                                    showPreview(before)
+                                },
+                                checkBefore: function () {
+                                    var index = $.inArray(item, $scope.objects);
+                                    return index > 0
+                                },
+                                next: function () {
+                                    var index = $.inArray(item, $scope.objects);
+                                    var next = $scope.objects[index + 1];
+                                    showPreview(next)
+
+                                },
+                                checkNext: function () {
+                                    var index = $.inArray(item, $scope.objects);
+                                    return index < $scope.objects.length - 1
                                 },
                                 rename: function () {
                                     showRename(item);

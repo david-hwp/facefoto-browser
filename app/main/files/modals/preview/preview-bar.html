@@ -6,13 +6,9 @@
 <span ng-show="others_btn">
   <button type="button" class="btn btn-default btn-sm" ng-click="showFn.download()">
     <i class="fa fa-download text-info"></i>
-    下载</button>
+    <!--下载</button>-->
 
-  <button type="button" class="btn btn-default btn-sm" ng-click="showFn.remove();cancel();">
-    <i class="fa fa-trash text-danger"></i>
-    删除</button>
-
-  <button type="button" class="btn btn-default btn-sm" ng-click="showFn.move(true);cancel();">
+  <!--<button type="button" class="btn btn-default btn-sm" ng-click="showFn.move(true);cancel();">
     <i class="fa fa-copy text-primary"></i>
     复制</button>
   <button type="button" class="btn btn-default btn-sm" ng-click="showFn.move(false);cancel();">
@@ -44,6 +40,20 @@
   <!-- 获取地址 -->
     {{'getAddress'|translate}}
 </button>
+
+
+<button type="button" class="btn btn-default btn-sm" ng-click="showFn.before();cancel();" ng-disabled="!showFn.checkBefore()">
+  <i class="fa fa-arrow-left text-info"></i>
+  前一张</button>
+
+<button type="button" class="btn btn-default btn-sm" ng-click="showFn.quickRemove();cancel();">
+  <i class="fa fa-trash text-danger"></i>
+  删除</button>
+
+<button type="button" class="btn btn-default btn-sm" ng-click="showFn.next();cancel();" ng-disabled="!showFn.checkNext()">
+  后一张&nbsp;<i class="fa fa-arrow-right text-info"></i>
+  </button>
+
 
 <!-- <button type="button" class="btn btn-default btn-sm" ng-click="showFn.grant();cancel();">
   <i class="fa fa-shield text-warning"></i>

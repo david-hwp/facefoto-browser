@@ -105,7 +105,7 @@ angular.module('web')
 
             function goBack() {
                 var addr = His.goBack();
-                //console.log('-->',addr);
+                console.log('-->',addr);
                 $scope.address = addr.url.replace(userAddr, '');
                 go()
                 // $scope.$emit('ossAddressChange', addr.url.replace(userAddr, ''));
@@ -113,7 +113,7 @@ angular.module('web')
 
             function goAhead() {
                 var addr = His.goAhead();
-                //console.log('-->',addr);
+                console.log('-->',addr);
                 $scope.address = addr.url.replace(userAddr, '');
                 go()
                 // $scope.$emit('ossAddressChange', addr.url.replace(userAddr, ''));

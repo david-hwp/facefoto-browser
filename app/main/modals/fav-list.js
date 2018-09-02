@@ -5,7 +5,6 @@ angular.module('web')
   function($scope,$rootScope, $translate, $state,$modalInstance,Fav,Toast){
     var T = $translate.instant;
     angular.extend($scope, {
-
       cancel: cancel,
       refresh: refresh,
       removeFav: removeFav,
