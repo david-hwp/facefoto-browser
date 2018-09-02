@@ -391,7 +391,6 @@ angular.module('web')
 
             }
 
-            //TODO 由照片页退回到活动页时没有数据
             function refreshCurrent(info) {
                 if ($scope.rank == 1 && $scope.allCommunity != null) {
                     var allCommunity = angular.copy($scope.allCommunity);
